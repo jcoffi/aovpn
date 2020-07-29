@@ -3,26 +3,29 @@
 .SYNOPSIS
     PowerShell script to update common settings in the Windows remote access phonebook configuration file.
 
-.PARAMETER ProfileName
-    The name of the VPN connection to update settings for.
-
-.PARAMETER SetPreferredProtocol
-    Defines the preferred VPN protocol.
-
-.PARAMETER InterfaceMetric
-    Defines the interface metric to be used for the VPN connection.
+.PARAMETER AllUserConnection
+    Identifies the VPN connection is configured for all users.
 
 .PARAMETER DisableIkeMobility
     Setting to disable IKE mobility.
 
+.PARAMETER InterfaceMetric
+    Defines the interface metric to be used for the VPN connection.
+
 .PARAMETER NetworkOutageTime
     Defines the network outage time when IKE mobility is enabled.
+
+.PARAMETER ProfileName
+    The name of the VPN connection to update settings for.
 
 .PARAMETER RasphonePath
     Specifies the path to the rasphone.pbk file. This parameter may be required when running this script using SCCM or other systems management tools that deploy software to the user but run in the SYSTEM context.
 
-.PARAMETER AllUserConnection
-    Identifies the VPN connection is configured for all users.
+.PARAMETER SetPreferredProtocol
+    Defines the preferred VPN protocol.
+
+.PARAMETER UseRasCredentials
+    Enables or disables the usage of the VPN credentials for SSO against systems behind the VPN.
 
 .EXAMPLE
     .\Update-Rasphone.ps1 -ProfileName 'Always On VPN' -SetPreferredProtocol IKEv2 -InterfaceMetric 15 -DisableIkeMobility
@@ -41,9 +44,9 @@
     https://directaccess.richardhicks.com/
 
 .NOTES
-    Version:        1.1
+    Version:        1.3
     Creation Date:  April 9, 2020
-    Last Updated:   April 30, 2020
+    Last Updated:   June 19, 2020
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
@@ -55,6 +58,7 @@
 
 Param(
 
+    [Parameter(Mandatory, HelpMessage = 'Enter the name of the VPN profile to update.')]    
     [string]$ProfileName,
     [ValidateSet('IKEv2', 'IKEv2Only', 'SSTP', 'SSTPOnly', 'Automatic')]
     [string]$SetPreferredProtocol,
@@ -63,6 +67,9 @@ Param(
     [ValidateSet('60', '120', '300', '600', '1200', '1800')]
     [string]$NetworkOutageTime,
     [string]$RasphonePath,
+    [ValidateSet('True', 'False')]
+    [string]$UseRasCredentials,
+    [switch]$UseWinlogonCredential,
     [switch]$AllUserConnection
 
 )
@@ -70,7 +77,7 @@ Param(
 # // Exit script if options to disable IKE mobility and define a network outage time are both enabled
 If ($DisableIkeMobility -And $NetworkOutageTime) {
 
-    Write-Warning 'The option to disable IKE mobility and set a network outage time are mutually exclusive. Please choose one and re-run this command.'
+    Write-Warning 'The option to disable IKE mobility and set a network outage time are mutually exclusive. Please choose one and run this command again.'
     Exit  
 
 }
@@ -104,11 +111,11 @@ If ($SetPreferredProtocol) {
 
     Switch ($SetPreferredProtocol) {
 
-        IKEv2       { $Value = '14' }
-        IKEv2Only   { $Value = '7'}
-        SSTP        { $Value = '6' }
-        SSTPOnly    { $Value = '5'}
-        Automatic   { $Value = '0' }
+        IKEv2 { $Value = '14' }
+        IKEv2Only { $Value = '7' }
+        SSTP { $Value = '6' }
+        SSTPOnly { $Value = '5' }
+        Automatic { $Value = '0' }
 
     }
     
@@ -139,6 +146,34 @@ If ($NetworkOutageTime) {
 
 }
 
+# // Define use of VPN credentials for SSO to on-premises resources (helpful for non-domain joined clients)
+If ($UseRasCredentials) {
+
+    Switch ($UseRasCredentials) {
+
+        true { $Value = '1' }
+        false { $Value = '0' }
+
+    }
+
+    $Settings.Add('UseRasCredentials', $Value)
+
+}
+
+# // Define use of logged on user's Windows credentials for automatic VPN logon (helpful when MS-CHAP v2 authentication is configured)
+If ($UseWinlogonCredential) {
+
+    Switch ($UseWinlogonCredential) {
+
+        true { $Value = '1' }
+        false { $Value = '0' }
+
+    }
+
+    $Settings.Add('AutoLogon', $Value)
+
+}
+
 # // Function to update rasphone.pbk settings
 Function Update-Rasphone {
 
@@ -152,7 +187,7 @@ Function Update-Rasphone {
     
     )
     
-    $RasphoneProfiles = (Get-Content $Path -Raw) -split "\[" | Where-Object { $_ } # "`n\s?`n\["
+    $RasphoneProfiles = (Get-Content $Path -Raw) -split "\[" | Where-Object { $_ -match "\w+" } # "`n\s?`n\["
     $Output = @()
     $Pass = @()
     
@@ -176,7 +211,7 @@ Function Update-Rasphone {
     
         ForEach ($Entry in $Profiles) {
     
-            If ($Entry.Name -Match $Name) {
+            If ($Entry.Name -Match "^$Name$") {
     
                 Write-Verbose "Updating settings for ""$($Entry.Name)""..."
                 $Profile = $Entry.Value
@@ -252,8 +287,8 @@ Update-Rasphone -Path $RasphonePath -ProfileName $ProfileName -Settings $Setting
 # SIG # Begin signature block
 # MIINbAYJKoZIhvcNAQcCoIINXTCCDVkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU2mDsShZEA89hXB8/bsyyLVTA
-# 8xWgggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUoMbKcgVm7byiFp0NeIM5FnLy
+# QlugggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
 # AQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMTMxMDIyMTIwMDAwWhcNMjgxMDIyMTIwMDAwWjByMQsw
@@ -315,11 +350,11 @@ Update-Rasphone -Path $RasphonePath -ProfileName $ProfileName -Settings $Setting
 # Z2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0ECEAzkyhDXGglH
 # uQrfNWNuXYgwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFAL5NvCnLOyUCyKoJgPSDuAoeEs9MA0G
-# CSqGSIb3DQEBAQUABIIBAGAmZxP/qg7zR/oPSKjPChlkNZlr7EEk9S4YEfsqnwTu
-# xNNYcbU32VjtbIzeBRYiuYjwJ0Fy8n+tdvZHZiQ48ghHNC/MvEKPaVa6ACl9BYMt
-# G82rFPSJ2qA/VyS8Zoqj3eyY570OGne5DbPcXY/BsCudGnR4P5WZbdsn3LGcF7Vp
-# yAI/twZwzp4H6nm+Y3DNzNHlc6jb4EM1AQHhYYUhv7e5mW+wQRxHHIk57anUrDJu
-# 7uDlI4w8IO+dURuFu+X9PAFjli6raSWQfX96i1KTd6tjr9HfB00cmeSKaMVm65x5
-# eKjbRnrCQv6Fg837ecf3gcXLmpVLbmCp8kLiDae0X84=
+# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFMLJ4QJBRoM36Kx8fJSBsDsh7LzkMA0G
+# CSqGSIb3DQEBAQUABIIBAI6swQSWqSgizhvEOY+dt/caMLLNl5/PRIkX/miITmfS
+# gui0l/y2Pg4FRzj8HEQs5dVc2J4E/kjVdPZVFh+dut6Uq/RJWYCAyOv8B7IJAyJv
+# TTixa/uA4nMXcjIaYkdbD3lzrIxMmMCKEs9CyeXKelK659ex+2Ah0blHPXuoYBli
+# ZcyWD6xritSybdfk+eD2j5a8K2Ha/hZ3jBkqV90eKByRc1gSBhe0Cpv0C+yL4dtX
+# NsQn0M+rkPSh0nlP08NNBrk0vXcIJITg5bERN7uFAZq17QwQROx2IDIK7lfy4h9s
+# aMYsjhyN3hch2zIiitSXdqEQ4JGJMPJgivqDej4JG1U=
 # SIG # End signature block

@@ -6,7 +6,7 @@
 .PARAMETER Thumbprint
     Certificate hash of the trusted root certification authority used for IKEv2 VPN connections.
 
-.PARAMETER EnableCertificateAuthnetication
+.PARAMETER EnableCertificateAuthentication
     Enables machine certificate authentication for IKEv2 VPN connections.
 
 .PARAMETER Clear
@@ -23,7 +23,7 @@
 .EXAMPLE
     .\Set-IKEv2VPNRootCertificate.ps1 -Thumbprint '71899A67BF33AF31BEFDC071F8F733B183856332' -Restart
 
-    Running this command will configure RRAS to use this certification authority as the exclusive trusted CA for all IKEv2 VPN connections. Including the -Restart swtich restarts the RemoteAccess service for changes to take effect.
+    Running this command will configure RRAS to use this certification authority as the exclusive trusted CA for all IKEv2 VPN connections. Including the -Restart switch restarts the RemoteAccess service for changes to take effect.
     
 .EXAMPLE
     .\Set-IKEv2VPNRootCertificate.ps1 -Thumbprint '71899A67BF33AF31BEFDC071F8F733B183856332' -EnableCertificateAuthentication
@@ -37,13 +37,13 @@
     https://directaccess.richardhicks.com/
 
 .NOTES
-    Version:        1.11
+    Version:        1.2
     Creation Date:  August 2, 2019
-    Last Updated:   October 29, 2019
+    Last Updated:   June 29, 2020
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
-    Web Site:       www.richardhicks.com
+    Web Site:       https://directaccess.richardhicks.com/
 
 #>
 
@@ -52,7 +52,7 @@
 Param (
     
     [string]$Thumbprint,
-    [switch]$EnableCertificateAuthnetication,
+    [switch]$EnableCertificateAuthentication, 
     [switch]$Clear,
     [switch]$Restart
 
@@ -90,9 +90,9 @@ If ($VpnAuthProtocol -like '*certificate*') {
 
 }
 
-ElseIf (-Not $EnableCertificateAuthnetication) {
+ElseIf (-Not $EnableCertificateAuthentication) {
 
-    Write-Warning 'Certificate authentication not enabled. Use the -EnableCertificateAuthnetication parameter to configure it.'
+    Write-Warning 'Certificate authentication not enabled. Use the -EnableCertificateAuthentication parameter to configure it.'
     Exit
 
 }
@@ -111,7 +111,7 @@ ForEach ($Protocol in $VpnAuthProtocol) {
 }
 
 # Add the Certificate authentication protocol is required
-If ($EnableCertificateAuthnetication) {
+If ($EnableCertificateAuthentication) {
 
     $Protocols.Add('Certificate')
 
@@ -136,8 +136,8 @@ Else {
 # SIG # Begin signature block
 # MIINbAYJKoZIhvcNAQcCoIINXTCCDVkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUmXpcadZZfu49p08fDd2x9DOM
-# 9rSgggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU24z8N/E14v+TecDdVq0qe9Ry
+# Vm6gggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
 # AQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMTMxMDIyMTIwMDAwWhcNMjgxMDIyMTIwMDAwWjByMQsw
@@ -199,11 +199,11 @@ Else {
 # Z2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0ECEAzkyhDXGglH
 # uQrfNWNuXYgwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFDUyKwyhi8ElFz5ommx9vSxU2i1WMA0G
-# CSqGSIb3DQEBAQUABIIBABRZVIXyY8/g4EQPYriDxj4xyHxXEApgKMnuxLyPtSPq
-# 5MemafhRYOpzVrb9Wu4+PEThYVNtYMyobw0uQy2F8dCx846Sn5eon0E93/LmxSfG
-# 0FXamrIFf4wpchOcfSH41tIzJ0YLyXy8n69S3JmbXSmc0hZOGtWmmNgzV99HKQY4
-# 3p1DaMU6W9z7KQQzAiqDZao3nt6IXdp4yWwsriMGe7GTl11qZ9ibb91XH2gD72dO
-# dOcFx2BPYi6YLwHDao9nEcDpLyzHNaVvKcwxXB6bbgcaWs916yVBj5xuCagW57t1
-# +PJV1cf2bRCq2gpY1aWAxTxqoKtO7tz+d3aLwA3F/lA=
+# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFMGLFLjQMdJL4rBJB5ahB21oYAOXMA0G
+# CSqGSIb3DQEBAQUABIIBAB7j2ky4zPv+hp4ddQDdrOZUVrlhA1g5n4i379rbpXPx
+# ZHtYcVjuJ/9FIfGvBoL3U76yBt4RFuI3D5xQWXd6QZjkj8PNUFiK3rGCjYjtQRvC
+# rGpFOVsl3uMAEFJd6H5xDWGfNUzhSip6AunrynWhgZ9eYxsMitnmbMB/el7a6/YQ
+# qNtXoiZAcmubLMncCc17oUvpVbwIbFYtXWs1ptvY5l77BXP1op2bKgfFVvxKMvfG
+# hqfvu46/8QU/pC63KnVq6oKkJfYf/avEj/l5V6QZCUZvXAGYBgg+IcUGYX8VaXmQ
+# pvtyIbRz5CSJeOrN/TtW8PWdaRZDD5AGsFGXIk2fzTs=
 # SIG # End signature block

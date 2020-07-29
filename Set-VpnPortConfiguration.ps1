@@ -15,19 +15,19 @@
     Running this PowerShell command will configure 2000 SSTP and IKEv2 ports.
 
 .DESCRIPTION
-    This script is used to quickly configure SSTP and IKEv2 VPN ports. It also disables GRE, PPPOE, PPTP, and L2TP.
+    This script is used to quickly configure SSTP and IKEv2 VPN ports. It also disables the GRE, PPPOE, PPTP, and L2TP legacy VPN protocols.
 
 .LINK
     https://directaccess.richardhicks.com/
 
 .NOTES
-    Version:        1.0
+    Version:        1.1
     Creation Date:  February 13, 2020
-    Last Updated:   February 13, 2020
+    Last Updated:   May 23, 2020
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
-    Web Site:       www.richardhicks.com
+    Web Site:       https://www.richardhicks.com/
 
 #>
 
@@ -36,9 +36,9 @@
 Param(
 
     [Parameter(Mandatory = $True, HelpMessage = "Enter the number of IKEv2 ports to enable.")]
-    [string]$Ikev2Ports,
+    [string]$Ikev2Ports = '128',
     [Parameter(Mandatory = $True, HelpMessage = "Enter the number of SSTP ports to enable.")]
-    [string]$SstpPorts
+    [string]$SstpPorts = '128'
 
 )
 
@@ -65,8 +65,8 @@ Write-Warning 'The server must be restarted for these changes to take effect.'
 # SIG # Begin signature block
 # MIINbAYJKoZIhvcNAQcCoIINXTCCDVkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUEUfTs6cx2HyLmkdkpPYLgr3T
-# 1wigggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUdKeMxQk1YFXlvW2OpaIiUbO6
+# tBqgggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
 # AQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMTMxMDIyMTIwMDAwWhcNMjgxMDIyMTIwMDAwWjByMQsw
@@ -128,11 +128,11 @@ Write-Warning 'The server must be restarted for these changes to take effect.'
 # Z2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0ECEAzkyhDXGglH
 # uQrfNWNuXYgwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFLMcIC2u4tQU5VHoSoGuV8S4lIBFMA0G
-# CSqGSIb3DQEBAQUABIIBAAltVnuGu0hblJ5Khw1/1MgWHeUunNY48yOj5Ot3u80V
-# l9ISAYwrVauM1LdYVOP8cbPGZxzWGlMmJLGwD0nqpL8kqtf42mAJbhcd3PJ2itrN
-# yiwPnATh3iyFVDmnknQWbcI5OFVMwSt1qvEDUF7g8YGY3Q0yU4/f5u0xhjwRzOFO
-# hzTN/TqXWP+97U03tqvFsVifmgL3krhFuVTwqnf5ixRgGFNsYSpWjNfeR0J5xQVX
-# 8UimyvjkyVfjjm0BbzJ+krWUUxFNN57cm0ZAXMkxzabY0RyS4EUtUTGHHnCdoPu0
-# PIW6It4Z8piBUGYMZT/3+3yB26LEVvfjthb6l15tJF0=
+# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFJU8O9mr9M2GF+v0Y+cwvXHSHXdfMA0G
+# CSqGSIb3DQEBAQUABIIBAIdmZyduZLOxLMEo1+XP+V4jAbEiYUHQn5cE4xQkp2dJ
+# 1NY8PUvHzXXDfjETB/Qic2iZ9yk5uZ7gprz+8G24p0fVkaOXqLY6tQNo+MIMxdm1
+# G4LY7zgqdJeVRMli85V2G2EyG5Kcv+r7UzR6P6QiW1oiCf2gazqqYMaXFJQDngjj
+# Vhu7yEjHoMp7Zxc01x9QXeVQM8C+5ylOd9PI5/WH+CSxf9AlvQgiW8zsOC/HOwdI
+# 1epKRNWWhh3iMMlfVyNG6QehkxZ80uMDir3qQtUAF1iOUd6FtfWl6OZKZI7CeYQ7
+# tv4/RpeoAX7PrqogqyHwwpCHIIBEj9pG8R6VPSJiDM0=
 # SIG # End signature block

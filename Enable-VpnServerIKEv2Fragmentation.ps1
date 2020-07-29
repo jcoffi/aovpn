@@ -7,22 +7,22 @@
     Restarts the RemoteAccess service.
 
 .EXAMPLE
-    .\Enable-IKEv2VPNFragmentation.ps1
+    .\Enable-VpnServerIKEv2Fragmentation.ps1
 
 .DESCRIPTION
-    Create a registry entry to enable IKEv2 fragmentation support on Windows Server 1803 and later operating systmes.
+    Create a registry entry to enable IKEv2 fragmentation support on Windows Server 1803 and later operating systems.
 
 .LINK
     https://directaccess.richardhicks.com/2019/02/11/always-on-vpn-and-ikev2-fragmentation/
 
 .NOTES
-    Version:        1.1
+    Version:        1.2
     Creation Date:  August 3, 2019
-    Last Updated:   January 25, 2020
+    Last Updated:   June 29, 2020
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
-    Web Site:       www.richardhicks.com
+    Web Site:       https://directaccess.richardhicks.com/
 
 #>
 
@@ -76,8 +76,8 @@ Else {
 # SIG # Begin signature block
 # MIINbAYJKoZIhvcNAQcCoIINXTCCDVkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUgA/DkU/oX7l7CuV3atV2XMKD
-# Ap6gggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUUDtVVIlfXvGKxgcrQaaEP5fu
+# pdWgggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
 # AQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMTMxMDIyMTIwMDAwWhcNMjgxMDIyMTIwMDAwWjByMQsw
@@ -139,11 +139,11 @@ Else {
 # Z2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0ECEAzkyhDXGglH
 # uQrfNWNuXYgwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFOlm609I4VuR5J23h9aZfzs4sN6GMA0G
-# CSqGSIb3DQEBAQUABIIBAJYOIxbwX+4K615WRdae+d8Vx3eD0qzurY+AHyx4CM6X
-# YMVavBjJyHjwb+dfi4RYCW7BLFTghOrc/yLQTwyd6pzi329R5MRpSkihZFgqGcIC
-# lwFXlK6LeZa/7d/Rw7N/+w8TVt1Bly7jAr0F4LqUvPhKcivJcsNo2FUZE2OPEK4p
-# 9xJrKm6G49HmBDK9YmyyaQkDCU4AfTyuZwZYxNN/Ra6T4UYP4kRZsmjtyXMFqpE5
-# L9gS2WYooODWrd8VEwiNy24/S8A8t2RJlpa4MZvW3GCNXECuYwIc6q1MV1O2UpoO
-# +eccbfSNm5roYkGcx7d++dUMVla8plKHeFU8/6WFrsw=
+# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFHqXIfb27oHZ38WHkY9hJmmmukDcMA0G
+# CSqGSIb3DQEBAQUABIIBAHQrpPOhTXgjreFB/nd3QYxKidGNcU9jLf6l2RSvYwkA
+# iB+v2w6z7QKRgCdj+tcwXXAB+bYyf7QKPsMN1OVMnIpi4xJMnqjpRCgaxhsEp62l
+# uw1cC+9+WeuzmXIgOLyzfLMnHWRQym385MpH5sTNLTfw42I/Jlr5qaZYqrrAvWha
+# OFPRwV4WQeq1HJSXGVuF+tz8ac5XXt3i1m328H6gCbgi6so0tkD1H4MOuqeXNtaq
+# 3H1u7vTGNz5Bab3LIjZG//1MopE9HoYWTMUw5yVpZReNxhDcVMN/pj2ex1xxIPc5
+# hkvVJN1S9LYomxW1YTzRhWpn+G5u8IPODhnKM+ROR4I=
 # SIG # End signature block
